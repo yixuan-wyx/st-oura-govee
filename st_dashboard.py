@@ -7,7 +7,9 @@ import plotly.graph_objects as go
 import pandas as pd
 import vis as vis
 import streamlit as st
-from datetime import datetime
+from datetime import datetime, timedelta
+import plotly.express as px
+import config
 
 
 # Try to get the token from Streamlit secrets
@@ -38,7 +40,10 @@ def get_oura_data(oura_token, d_type="workout", start_date="2024-06-01", end_dat
     return df
 
 
-def get_govee_data(file_path="yw_govee.csv"):
+# def get_govee_data(file_path="yw_govee.csv"):
+#     return pd.read_csv(file_path)
+
+def get_csv(file_path):
     return pd.read_csv(file_path)
 
 
@@ -55,7 +60,7 @@ start_date = st.date_input('Start Date', datetime(2024, 6, 11))
 end_date = st.date_input('End Date', datetime(2024, 7, 30))
 
 # Data type selection
-select_data = st.selectbox('Select Data', ['Oura Sleeping Data', 'Govee Indoor Temperature Data'])
+select_data = st.selectbox('Select Data', ['Oura Sleeping Data', 'Govee Temperature Data'])
 
 api_token = oura_token
 
@@ -77,9 +82,20 @@ if select_data == 'Oura Sleeping Data':
         st.plotly_chart(vis.visualize_daily_hrv(merged_oura_data))
         st.plotly_chart(vis.visualize_daily_steps(merged_oura_data))
 
-elif select_data == 'Govee Indoor Temperature Data':
+elif select_data == 'Govee Temperature Data':
     # if st.checkbox('Show all Govee plots'):
-        govee_data = get_govee_data()
+        govee_data = get_csv(file_path="yw_govee.csv")
+        noaa_data = get_csv(file_path="nyc_temperature_data.csv")
+
+        govee_data['Timestamp'] = pd.to_datetime(govee_data['Timestamp'])
+        govee_data = govee_data[(govee_data['Timestamp'] >= pd.to_datetime(start_date)) & (govee_data['Timestamp'] <= pd.to_datetime(end_date))]
+    
+        noaa_data['date'] = pd.to_datetime(noaa_data['date'])
+        noaa_data = noaa_data[(noaa_data['date'] >= pd.to_datetime(start_date)) & (noaa_data['date'] <= pd.to_datetime(end_date))]
+        
         st.plotly_chart(vis.visualize_daily_average_temp_humidity(govee_data))
         st.plotly_chart(vis.visualize_govee_temperature(govee_data))
         st.plotly_chart(vis.visualize_govee_humidity(govee_data))
+
+        st.plotly_chart(vis.visualize_combined_temperature(govee_data, noaa_data))
+        st.plotly_chart(vis.visualize_noaa_temperature(noaa_data))

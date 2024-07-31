@@ -471,3 +471,80 @@ def visualize_daily_average_temp_humidity(data):
     )
 
     return fig
+
+
+'''
+NOAA Plots
+'''
+def visualize_noaa_temperature(data):
+    fig = go.Figure()
+    fig.add_trace(go.Scatter(
+        x=data['date'], 
+        y=data['temp_min'], 
+        mode='lines', 
+        name='Daily Low',
+        line=dict(color='lightgreen')
+    ))
+    fig.add_trace(go.Scatter(
+        x=data['date'], 
+        y=data['temp_max'], 
+        mode='lines', 
+        name='Daily High',
+        line=dict(color='salmon')
+    ))
+    fig.update_layout(
+        title='NYC Outdoor Temperature Over Time',
+        xaxis_title='Date',
+        yaxis_title='Temperature (°F)'
+    )
+    return fig
+
+'''
+combined
+'''
+def visualize_combined_temperature(govee_data, noaa_data):
+    govee_data['Timestamp'] = pd.to_datetime(govee_data['Timestamp'])
+    govee_data['date'] = govee_data['Timestamp'].dt.date
+    noaa_data['date'] = pd.to_datetime(noaa_data['date']).dt.date
+
+    # Calculate daily average for Govee data
+    daily_avg_govee = govee_data.groupby('date').agg({
+        'Temperature_Fahrenheit': 'mean'
+    }).reset_index()
+
+    fig = go.Figure()
+
+    # Add indoor temperature trace
+    fig.add_trace(go.Scatter(
+        x=daily_avg_govee['date'], 
+        y=daily_avg_govee['Temperature_Fahrenheit'], 
+        mode='lines+markers', 
+        name='Indoor Temperature',
+        line=dict(color='blue')
+    ))
+
+    # Add outdoor daily low temperature trace
+    fig.add_trace(go.Scatter(
+        x=noaa_data['date'], 
+        y=noaa_data['temp_min'], 
+        mode='lines', 
+        name='Outdoor Daily Low',
+        line=dict(color='lightgreen')
+    ))
+
+    # Add outdoor daily high temperature trace
+    fig.add_trace(go.Scatter(
+        x=noaa_data['date'], 
+        y=noaa_data['temp_max'], 
+        mode='lines', 
+        name='Outdoor Daily High',
+        line=dict(color='salmon')
+    ))
+
+    fig.update_layout(
+        title='Indoor vs Outdoor Temperature Over Time',
+        xaxis_title='Date',
+        yaxis_title='Temperature (°F)'
+    )
+
+    return fig
