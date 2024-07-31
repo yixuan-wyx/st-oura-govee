@@ -1,0 +1,10 @@
+# Exclude Python bytecode
+__pycache__/
+*.py[cod]
+
+# Exclude virtual environments
+env/
+venv/
+
+# Exclude Streamlit secrets
+.streamlit/secrets.toml

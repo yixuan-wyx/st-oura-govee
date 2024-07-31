@@ -12,7 +12,7 @@ from datetime import datetime
 
 oura_token = st.secrets["OURA_API_TOKEN"]
 
-def get_oura_data(oura_token, d_type="workout", start_date="2024-06-01", end_date="2024-07-01"):
+def get_oura_data(oura_token, d_type="workout", start_date="2024-06-01", end_date="2024-07-30"):
     url = f'https://api.ouraring.com/v2/usercollection/{d_type}' 
     
     params={ 
