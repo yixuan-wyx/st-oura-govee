@@ -10,10 +10,16 @@ import streamlit as st
 from datetime import datetime
 
 
-# oura_token = st.secrets["OURA_API_TOKEN"]
-oura_token = os.getenv("OURA_API_TOKEN")
+# Try to get the token from Streamlit secrets
+oura_token = st.secrets.get("OURA_API_TOKEN")
+
+# If not found in Streamlit secrets, try to get it from environment variables
 if oura_token is None:
-    st.error("OURA_API_TOKEN not found. Please set it as an environment variable.")
+    oura_token = os.getenv("OURA_API_TOKEN")
+
+# If still not found, show an error message
+if oura_token is None:
+    st.error("OURA_API_TOKEN not found. Please set it in secrets.toml or as an environment variable.")
 
 
 def get_oura_data(oura_token, d_type="workout", start_date="2024-06-01", end_date="2024-07-30"):
