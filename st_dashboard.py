@@ -14,8 +14,6 @@ from datetime import datetime
 oura_token = os.getenv("OURA_API_TOKEN")
 if oura_token is None:
     st.error("OURA_API_TOKEN not found. Please set it as an environment variable.")
-else:
-    st.write("Token found and ready to use:", oura_token)
 
 
 def get_oura_data(oura_token, d_type="workout", start_date="2024-06-01", end_date="2024-07-30"):
