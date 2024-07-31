@@ -10,7 +10,13 @@ import streamlit as st
 from datetime import datetime
 
 
-oura_token = st.secrets["OURA_API_TOKEN"]
+# oura_token = st.secrets["OURA_API_TOKEN"]
+oura_token = os.getenv("OURA_API_TOKEN")
+if oura_token is None:
+    st.error("OURA_API_TOKEN not found. Please set it as an environment variable.")
+else:
+    st.write("Token found and ready to use:", oura_token)
+
 
 def get_oura_data(oura_token, d_type="workout", start_date="2024-06-01", end_date="2024-07-30"):
     url = f'https://api.ouraring.com/v2/usercollection/{d_type}' 
@@ -45,7 +51,7 @@ start_date = st.date_input('Start Date', datetime(2024, 6, 11))
 end_date = st.date_input('End Date', datetime(2024, 7, 30))
 
 # Data type selection
-select_data = st.selectbox('Select Data', ['Oura Sleeping Data', 'Govee Temperature Data'])
+select_data = st.selectbox('Select Data', ['Oura Sleeping Data', 'Govee Indoor Temperature Data'])
 
 api_token = oura_token
 
@@ -67,7 +73,7 @@ if select_data == 'Oura Sleeping Data':
         st.plotly_chart(vis.visualize_daily_hrv(merged_oura_data))
         st.plotly_chart(vis.visualize_daily_steps(merged_oura_data))
 
-elif select_data == 'Govee Temperature Data':
+elif select_data == 'Govee Indoor Temperature Data':
     # if st.checkbox('Show all Govee plots'):
         govee_data = get_govee_data()
         st.plotly_chart(vis.visualize_daily_average_temp_humidity(govee_data))
