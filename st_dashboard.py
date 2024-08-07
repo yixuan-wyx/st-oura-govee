@@ -51,16 +51,17 @@ def get_csv(file_path):
 st.title('User Data Dashboard')
 
 # User selection
-users = ['YW', 'User2']
-user = st.selectbox('Select User', users)
+with st.sidebar:
+    users = ['YW', 'User2']
+    user = st.selectbox('Select User', users)
 
 
-# Date input
-start_date = st.date_input('Start Date', datetime(2024, 6, 11))
-end_date = st.date_input('End Date', datetime(2024, 7, 30))
+    # Date input
+    start_date = st.date_input('Start Date', datetime(2024, 6, 11))
+    end_date = st.date_input('End Date', datetime(2024, 7, 30))
 
-# Data type selection
-select_data = st.selectbox('Select Data', ['Oura Sleeping Data', 'Govee Temperature Data'])
+    # Data type selection
+    select_data = st.selectbox('Select Data', ['Oura Sleeping Data', 'Govee Temperature Data'])
 
 api_token = oura_token
 
