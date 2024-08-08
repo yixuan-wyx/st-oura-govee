@@ -544,7 +544,13 @@ def visualize_combined_temperature(govee_data, noaa_data):
     fig.update_layout(
         title='Indoor vs Outdoor Temperature Over Time',
         xaxis_title='Date',
-        yaxis_title='Temperature (°F)'
+        yaxis_title='Temperature (°F)',
+        legend=dict(
+            x=1,
+            y=1,
+            xanchor='right',
+            yanchor='top'
+        )
     )
 
     return fig
