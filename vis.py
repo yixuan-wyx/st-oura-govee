@@ -547,10 +547,11 @@ def visualize_combined_temperature(govee_data, noaa_data):
         yaxis_title='Temperature (°F)',
         legend=dict(
             x=1,
-            y=1,
+            y=1.1,
             xanchor='right',
             yanchor='top'
-        )
+        ),
+        margin=dict(t=100)
     )
 
     return fig
